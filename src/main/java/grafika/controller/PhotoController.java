@@ -2,13 +2,9 @@ package grafika.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageOutputStream;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,19 +20,21 @@ public class PhotoController {
 	private File currentFile;
 	private byte[] currentImage;
 	private int offset = 46;
+	private String currentFilename;
 
 	@RequestMapping("/upload")
 	public String upload(@RequestParam MultipartFile file) throws IllegalStateException, IOException {
-		String filename = file.getOriginalFilename();
+		currentFilename = file.getOriginalFilename();
 		String userDir = System.getProperty("user.dir");
 		userDir = userDir.replace('\\', '/');
-		String path = userDir + "/src/main/resources/static/bmp/" + filename;
-		// String path = "C:/Users/piotr/Desktop/grafika
-		// projekt/ui/grafika/src/assets/bmp/" + filename;
-		File savedFile = new File(path);
+		String backendPath = userDir + "/src/main/resources/static/bmp/" + currentFilename;
+		String frontendPath = "C:/Users/piotr/Desktop/grafika projekt/ui/grafika/src/assets/bmp/" + currentFilename;
+		File uiFile = new File(frontendPath);
+		File savedFile = new File(backendPath);
 		currentFile = savedFile;
 		file.transferTo(savedFile);
-		this.currentImage = file.getBytes();
+		file.transferTo(uiFile);
+		currentImage = file.getBytes();
 		return savedFile.getAbsolutePath();
 	}
 
@@ -52,23 +50,10 @@ public class PhotoController {
 		}
 
 		System.out.println("/filter");
-		// System.out.println(Arrays.toString(this.currentImage));
-		// System.out.println(this.currentImage.length);
-		// int alphaCounter = 1;
-		// for (int i = offset; i < currentImage.length; i++) {
-		// alphaCounter++;
-		// if (alphaCounter == 4) {
-		// alphaCounter = 1;
-		// continue;
-		// }
-		// currentImage[i] = (byte) (i % 255);
-		// }
 		ImageIO.write(buf, "bmp", currentFile);
-		// FileOutputStream fos = new
-		// FileOutputStream(currentFile.getAbsolutePath());
-		// fos.write(currentImage);
-		// fos.close();
-
+		String path = "C:/Users/piotr/Desktop/grafika projekt/ui/grafika/src/assets/bmp/" + currentFilename;
+		File uiFile = new File(path);
+		ImageIO.write(buf, "bmp", uiFile);
 	}
 
 	@RequestMapping("/test")
