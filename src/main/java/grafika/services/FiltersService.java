@@ -1,5 +1,6 @@
 package grafika.services;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -25,7 +26,6 @@ public class FiltersService {
 
 		int factor = calculateFactor(matrix);
 		int matrixWidth = (int) Math.sqrt(matrix.length);
-
 		// bitmapa z ktorej odczytujemy piksele
 		BufferedImage tempBitmap = deepCopy(image);
 
@@ -39,6 +39,7 @@ public class FiltersService {
 		int redPixel = 0;
 		int bluePixel = 0;
 		int greenPixel = 0;
+		Color color;
 
 		// wspolzedne piksela
 		int imageX = 0;
@@ -79,12 +80,20 @@ public class FiltersService {
 							imageY = image.getHeight() - 1;
 						}
 
-						rgbValue += matrix[i * matrixWidth + j] * tempBitmap.getRGB(imageX, imageY);
+						color = new Color(tempBitmap.getRGB(imageX, imageY));
+						redPixel += matrix[i * matrixWidth + j] * color.getRed();
+						bluePixel += matrix[i * matrixWidth + j] * color.getBlue();
+						greenPixel += matrix[i * matrixWidth + j] * color.getGreen();
 					}
 				}
-				// ustawienie wskaznika na pozadanym pikselu
-				rgbValue = factor != 0 ? rgbValue / factor : rgbValue;
-				image.setRGB(x, y, (int) rgbValue);
+
+				if (factor != 0) {
+					redPixel /= factor;
+					bluePixel /= factor;
+					greenPixel /= factor;
+				}
+				// image.setRGB(x, y, (int) rgbValue);
+				image.setRGB(x, y, new Color(redPixel, greenPixel, bluePixel).getRGB());
 			}
 		}
 		return image;

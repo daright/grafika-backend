@@ -57,9 +57,4 @@ public class PhotoController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RequestMapping("/test")
-	public String test() {
-		return "test";
-	}
-
 }
