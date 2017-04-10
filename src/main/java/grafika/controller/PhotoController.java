@@ -3,20 +3,28 @@ package grafika.controller;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import grafika.services.FiltersService;
+
 @RestController
 @RequestMapping("/photo")
 @CrossOrigin(origins = "http://localhost:4200")
 public class PhotoController {
 
+	@Autowired
+	private FiltersService filtersService;
 	private File currentFile;
 	private byte[] currentImage;
 	private int offset = 46;
@@ -39,21 +47,14 @@ public class PhotoController {
 	}
 
 	@RequestMapping("/filter")
-	public void filter() throws IOException {
+	public ResponseEntity<?> filter() throws IOException {
 		BufferedImage buf = ImageIO.read(currentFile);
-		int imageWidth = buf.getWidth();
-		int imageHeight = buf.getHeight();
-		for (int i = 0; i < imageWidth / 2; i++) {
-			for (int j = 0; j < imageWidth / 2; j++) {
-				buf.setRGB(i, j, 0);
-			}
-		}
-
-		System.out.println("/filter");
+		buf = filtersService.filter(buf, FiltersService.gaussianBlur);
 		ImageIO.write(buf, "bmp", currentFile);
 		String path = "C:/Users/piotr/Desktop/grafika projekt/ui/grafika/src/assets/bmp/" + currentFilename;
 		File uiFile = new File(path);
 		ImageIO.write(buf, "bmp", uiFile);
+		return ResponseEntity.noContent().build();
 	}
 
 	@RequestMapping("/test")
