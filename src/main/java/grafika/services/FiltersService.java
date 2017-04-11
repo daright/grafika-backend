@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class FiltersService {
 
-	public static int[] gaussianBlur = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
 	public static int[] boxFilter = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	public static int[] gaussianBlur = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
 	public static int[] sharpenFilter = { -1, -2, -1, -2, 16, -2, -1, -2, -1 };
 	public static int[] laplacianFilter = { 0, -1, 0, -1, 4, -1, 0, -1, 0 };
 	public static int[] embossFilter = { 2, 0, -0, 0, -1, 0, 0, 0, -1 };
@@ -35,7 +35,6 @@ public class FiltersService {
 		int imageHeightWithoutPixelPerSide = image.getHeight() - pixelPerSide;
 
 		// wartosci poszczegolnych kolorow piksela
-		long rgbValue = 0;
 		int redPixel = 0;
 		int bluePixel = 0;
 		int greenPixel = 0;
@@ -49,7 +48,6 @@ public class FiltersService {
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
 				// wyzerowanie wartosci pikseli
-				rgbValue = 0;
 				redPixel = 0;
 				bluePixel = 0;
 				greenPixel = 0;
@@ -92,7 +90,12 @@ public class FiltersService {
 					bluePixel /= factor;
 					greenPixel /= factor;
 				}
-				// image.setRGB(x, y, (int) rgbValue);
+				redPixel = redPixel > 255 ? 255 : redPixel;
+				bluePixel = bluePixel > 255 ? 255 : bluePixel;
+				greenPixel = greenPixel > 255 ? 255 : greenPixel;
+				redPixel = redPixel < 0 ? 0 : redPixel;
+				bluePixel = bluePixel < 0 ? 0 : bluePixel;
+				greenPixel = greenPixel < 0 ? 0 : greenPixel;
 				image.setRGB(x, y, new Color(redPixel, greenPixel, bluePixel).getRGB());
 			}
 		}
