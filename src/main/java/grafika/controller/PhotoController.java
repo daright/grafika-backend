@@ -44,9 +44,9 @@ public class PhotoController {
 		originalFile = new File(originalPath);
 		frontendFile = new File(frontendPath);
 		backendFile = new File(backendPath);
+		file.transferTo(frontendFile);
 		file.transferTo(backendFile);
 		file.transferTo(originalFile);
-		file.transferTo(frontendFile);
 	}
 
 	@RequestMapping("/box")
@@ -123,8 +123,8 @@ public class PhotoController {
 			buf = filtersService.filter(buf, filterType, filterSelection);
 			String frontendPath = frontendFile.getPath();
 			frontendFile = new File(frontendPath);
-			ImageIO.write(buf, "bmp", backendFile);
 			ImageIO.write(buf, "bmp", frontendFile);
+			ImageIO.write(buf, "bmp", backendFile);
 		} catch (IOException e) {
 			System.out.println("Error processing image " + e);
 		}
@@ -143,8 +143,8 @@ public class PhotoController {
 			buf = ImageIO.read(originalFile);
 			String frontendPath = frontendFile.getPath();
 			frontendFile = new File(frontendPath);
-			ImageIO.write(buf, "bmp", backendFile);
 			ImageIO.write(buf, "bmp", frontendFile);
+			ImageIO.write(buf, "bmp", backendFile);
 		} catch (IOException e) {
 			System.out.println("Error processing image " + e);
 		}
@@ -158,8 +158,8 @@ public class PhotoController {
 			buf = filtersService.blend(ImageIO.read(originalFile), ImageIO.read(backendFile), percent);
 			String frontendPath = frontendFile.getPath();
 			frontendFile = new File(frontendPath);
-			ImageIO.write(buf, "bmp", backendFile);
 			ImageIO.write(buf, "bmp", frontendFile);
+			ImageIO.write(buf, "bmp", backendFile);
 		} catch (IOException e) {
 			System.out.println("Error processing image " + e);
 		}
