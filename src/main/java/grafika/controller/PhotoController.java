@@ -2,6 +2,7 @@ package grafika.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -38,15 +39,21 @@ public class PhotoController {
 		backendFilename = file.getOriginalFilename();
 		String userDir = System.getProperty("user.dir");
 		userDir = userDir.replace('\\', '/');
-		String backendPath = userDir + "/src/main/resources/static/bmp/" + backendFilename;
 		String originalPath = userDir + "/src/main/resources/static/bmp/original.bmp";
 		String frontendPath = "C:/Users/piotr/Desktop/grafika projekt/ui/grafika/src/assets/bmp/" + backendFilename;
+		String backendPath = userDir + "/src/main/resources/static/bmp/" + backendFilename;
 		originalFile = new File(originalPath);
 		frontendFile = new File(frontendPath);
 		backendFile = new File(backendPath);
-		file.transferTo(frontendFile);
-		file.transferTo(backendFile);
-		file.transferTo(originalFile);
+		FileOutputStream originalOut = new FileOutputStream(originalFile);
+		FileOutputStream frontOut = new FileOutputStream(frontendFile);
+		FileOutputStream backOut = new FileOutputStream(backendFile);
+		originalOut.write(file.getBytes());
+		frontOut.write(file.getBytes());
+		backOut.write(file.getBytes());
+		originalOut.close();
+		frontOut.close();
+		backOut.close();
 	}
 
 	@RequestMapping("/box")
